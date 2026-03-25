@@ -12,3 +12,4 @@ export class S3Construct extends Construct {
     });
   }
 }
+

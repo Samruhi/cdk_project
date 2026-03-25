@@ -1,0 +1,48 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: us-east-1   # change if needed
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing dependencies..."
+      - npm install -g aws-cdk
+      - npm ci
+
+  pre_build:
+    commands:
+      - echo "Verifying CDK installation..."
+      - cdk --version
+
+  build:
+    commands:
+      - echo "Building TypeScript..."
+      - npm run build
+      - echo "Synthesizing CloudFormation template..."
+      - cdk synth
+
+  post_build:
+    commands:
+      - echo "Deploying CDK stack..."
+      - cdk deploy --require-approval never
+
+      # NEW: create output
+      - echo "Preparing build output..."
+      - mkdir output
+      - echo "Hello from CodeBuild" > output/file.txt
+
+      # NEW: upload to S3
+      - echo "Uploading to S3..."
+      - aws s3 cp output/ s3://$BUCKET_NAME/ --recursive
+
+cache:
+  paths:
+    - node_modules/**/*
+
+artifacts:
+  files:
+    - '**/*'

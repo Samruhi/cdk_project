@@ -5,8 +5,9 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 
 
 import { VpcConstruct } from './constructs/vpc-construct';
-import { S3Construct } from './constructs/s3-construct';
-import { Ec2Construct } from './constructs/ec2-construct';
+// import { S3Construct } from './constructs/s3-construct';
+// import { Ec2Construct } from './constructs/ec2-construct';
+import { PipelineStack } from './constructs/pipeline-construct';
 
 export class WebStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -15,13 +16,16 @@ export class WebStack extends cdk.Stack {
   // Create VPC
     const vpcConstruct = new VpcConstruct(this, 'VpcConstruct');
 
-    // Create EC2 inside VPC
-    new Ec2Construct(this, 'Ec2Construct', {
-      vpc: vpcConstruct.vpc
-    });
+    // // Create EC2 inside VPC
+    // new Ec2Construct(this, 'Ec2Construct', {
+    //   vpc: vpcConstruct.vpc
+    // });
 
-    // Create S3
-    new S3Construct(this, 'S3Construct');
+    // // Create S3
+    // new S3Construct(this, 'S3Construct');
+
+    const app = new cdk.App();
+    new PipelineStack(app, 'PipelineStack');
 
     // The code that defines your stack goes here
 
